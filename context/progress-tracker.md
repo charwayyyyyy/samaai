@@ -4,11 +4,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Authentication complete
+- Project dialogues complete
 
 ## Current Goal
 
-- Keep the authentication foundation ready for project features.
+- Keep the project dialogue flows ready for persistence-backed project features.
 
 ## Completed
 
@@ -63,3 +63,8 @@ Update this file whenever the current phase, active feature, or implementation s
 - Migrated editor route protection from deprecated `createRouteMatcher` middleware checks to resource-based authentication in the editor route layout.
 - Confirmed the reported hydration mismatch is caused by the browser extension's injected `data-pip-extension-id` attribute, not application-rendered markup.
 - Scoped `suppressHydrationWarning` to the root HTML element to prevent the browser extension's external attribute mutation from producing a hydration error.
+- Implemented the project home empty state and mock create, rename, and delete project dialogues.
+- Added ownership-gated project actions and a mobile sidebar backdrop.
+- Applied explicit dark-theme text tokens to project dialog titles, descriptions, inputs, and content for consistent contrast.
+- `npm run lint` and `npm run build` pass with project dialogues.
+- Addressed project sidebar review findings for closed-state inertness, non-hover action visibility, and nonempty slug consistency.
