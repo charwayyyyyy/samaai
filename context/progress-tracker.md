@@ -4,11 +4,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Editor chrome complete
+- Authentication complete
 
 ## Current Goal
 
-- Keep the reusable editor chrome ready for the next editor feature.
+- Keep the authentication foundation ready for project features.
 
 ## Completed
 
@@ -23,6 +23,12 @@ Update this file whenever the current phase, active feature, or implementation s
 - Wired the editor navbar and sidebar into the main page.
 - Composed the navbar and sidebar into the reusable `EditorLayout`.
 - Confirmed the existing dialog primitive supports title, description, and footer actions with token-based styling.
+- Installed `@clerk/ui` for the Clerk dark theme.
+- Added `ClerkProvider` with app CSS variable overrides.
+- Added responsive sign-in and sign-up page shells with Clerk components.
+- Added root-level `proxy.ts` protecting all non-auth routes.
+- Added authenticated `/editor` route and root auth-state redirect.
+- Added Clerk `UserButton` to the editor navbar.
 
 ## In Progress
 
@@ -48,3 +54,12 @@ Update this file whenever the current phase, active feature, or implementation s
 - Editor chrome implementation from `context/feature-specs/02-editor.md` is complete.
 - The navbar and sidebar are now consumed through `components/editor/editor-layout.tsx`.
 - `npm run lint` and `npm run build` pass with the editor chrome.
+- Authentication implementation started from `context/feature-specs/03-auth.md`.
+- Authentication implementation from `context/feature-specs/03-auth.md` is complete.
+- Auth routes: `/sign-in/[[...sign-in]]`, `/sign-up/[[...sign-up]]`, and protected `/editor`.
+- `npm run lint` and `npm run build` pass with Clerk authentication.
+- Refined the auth screens to use a 50/50 large-screen split with an AI-accent left panel.
+- Explicitly applied Geist Sans and Geist Mono to Clerk UI through the existing font variables.
+- Migrated editor route protection from deprecated `createRouteMatcher` middleware checks to resource-based authentication in the editor route layout.
+- Confirmed the reported hydration mismatch is caused by the browser extension's injected `data-pip-extension-id` attribute, not application-rendered markup.
+- Scoped `suppressHydrationWarning` to the root HTML element to prevent the browser extension's external attribute mutation from producing a hydration error.
