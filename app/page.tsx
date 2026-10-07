@@ -1,11 +1,8 @@
-import { EditorLayout } from "@/components/editor/editor-layout";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  return (
-    <EditorLayout>
-      <div className="flex min-h-screen items-center justify-center">
-        <span className="text-copy-primary">samaAl</span>
-      </div>
-    </EditorLayout>
-  );
+export default async function Home() {
+  const { userId } = await auth();
+
+  redirect(userId ? "/editor" : "/sign-in");
 }
