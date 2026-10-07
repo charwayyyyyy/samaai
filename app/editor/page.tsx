@@ -1,11 +1,10 @@
 import { EditorLayout } from "@/components/editor/editor-layout";
+import { EditorHome } from "@/components/editor/editor-home";
 
 export default function EditorPage() {
   return (
     <EditorLayout>
-      <div className="flex min-h-screen items-center justify-center">
-        <span className="text-copy-primary">samaAl</span>
-      </div>
+      <EditorHome />
     </EditorLayout>
   );
 }

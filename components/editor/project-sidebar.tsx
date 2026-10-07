@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, X } from "lucide-react";
+import { Pencil, Plus, Trash2, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -9,55 +9,104 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
+import { useProjectDialogues, type MockProject } from "@/components/editor/use-project-dialogues";
 
 interface ProjectSidebarProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-function EmptyProjectsState() {
+function ProjectItem({
+  project,
+  onRename,
+  onDelete,
+}: {
+  project: MockProject;
+  onRename: (project: MockProject) => void;
+  onDelete: (project: MockProject) => void;
+}) {
   return (
-    <div className="flex flex-1 items-center justify-center px-6 py-12 text-center text-sm text-copy-muted">
-      No projects yet
+    <div className="group flex items-center justify-between gap-2 rounded-lg px-3 py-2 hover:bg-subtle">
+      <div className="min-w-0">
+        <p className="truncate text-sm text-copy-primary">{project.name}</p>
+        <p className="truncate font-mono text-xs text-copy-muted">{project.slug}</p>
+      </div>
+      {project.isOwned && (
+        <div className="flex shrink-0 gap-1 opacity-100 transition-opacity [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:focus-within:opacity-100">
+          <Button aria-label={`Rename ${project.name}`} onClick={() => onRename(project)} size="icon-xs" variant="ghost">
+            <Pencil />
+          </Button>
+          <Button aria-label={`Delete ${project.name}`} onClick={() => onDelete(project)} size="icon-xs" variant="ghost">
+            <Trash2 />
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ProjectList({ projects, onRename, onDelete }: {
+  projects: MockProject[];
+  onRename: (project: MockProject) => void;
+  onDelete: (project: MockProject) => void;
+}) {
+  return (
+    <div className="space-y-1 px-3 py-4">
+      {projects.map((project) => (
+        <ProjectItem key={project.id} onDelete={onDelete} onRename={onRename} project={project} />
+      ))}
     </div>
   );
 }
 
 export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
+  const { projects, openCreateDialog, openRenameDialog, openDeleteDialog } = useProjectDialogues();
+  const ownedProjects = projects.filter((project) => project.isOwned);
+  const sharedProjects = projects.filter((project) => !project.isOwned);
+
   return (
-    <aside
-      aria-hidden={!isOpen}
-      aria-label="Project navigation"
-      className={`fixed bottom-0 left-0 top-14 z-30 flex w-80 flex-col border-r border-surface-border bg-surface shadow-2xl transition-transform duration-200 ${
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      }`}
-    >
-      <div className="flex h-14 items-center justify-between border-b border-surface-border px-4">
-        <h2 className="text-sm font-medium text-copy-primary">Projects</h2>
-        <Button aria-label="Close project sidebar" onClick={onClose} size="icon" variant="ghost">
-          <X />
-        </Button>
-      </div>
-
-      <Tabs className="flex min-h-0 flex-1" defaultValue="my-projects">
-        <TabsList className="mx-4 mt-4 w-auto shrink-0 bg-subtle">
-          <TabsTrigger value="my-projects">My Projects</TabsTrigger>
-          <TabsTrigger value="shared">Shared</TabsTrigger>
-        </TabsList>
-        <TabsContent className="flex min-h-0 flex-1" value="my-projects">
-          <EmptyProjectsState />
-        </TabsContent>
-        <TabsContent className="flex min-h-0 flex-1" value="shared">
-          <EmptyProjectsState />
-        </TabsContent>
-      </Tabs>
-
-      <div className="border-t border-surface-border p-4">
-        <Button className="w-full" variant="default">
-          <Plus />
-          New Project
-        </Button>
-      </div>
-    </aside>
+    <>
+      {isOpen && (
+        <button
+          aria-label="Close project sidebar"
+          className="fixed inset-0 z-20 bg-black/50 md:hidden"
+          onClick={onClose}
+          type="button"
+        />
+      )}
+      <aside
+        aria-hidden={!isOpen}
+        aria-label="Project navigation"
+        inert={!isOpen}
+        className={`fixed bottom-0 left-0 top-14 z-30 flex w-80 max-w-[calc(100vw-2rem)] flex-col border-r border-surface-border bg-surface shadow-2xl transition-transform duration-200 ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex h-14 items-center justify-between border-b border-surface-border px-4">
+          <h2 className="text-sm font-medium text-copy-primary">Projects</h2>
+          <Button aria-label="Close project sidebar" onClick={onClose} size="icon" variant="ghost">
+            <X />
+          </Button>
+        </div>
+        <Tabs className="flex min-h-0 flex-1" defaultValue="my-projects">
+          <TabsList className="mx-4 mt-4 w-auto shrink-0 bg-subtle">
+            <TabsTrigger value="my-projects">My Projects</TabsTrigger>
+            <TabsTrigger value="shared">Shared</TabsTrigger>
+          </TabsList>
+          <TabsContent className="min-h-0 flex-1 overflow-y-auto" value="my-projects">
+            {ownedProjects.length ? <ProjectList onDelete={openDeleteDialog} onRename={openRenameDialog} projects={ownedProjects} /> : <p className="px-6 py-12 text-center text-sm text-copy-muted">No projects yet</p>}
+          </TabsContent>
+          <TabsContent className="min-h-0 flex-1 overflow-y-auto" value="shared">
+            {sharedProjects.length ? <ProjectList onDelete={openDeleteDialog} onRename={openRenameDialog} projects={sharedProjects} /> : <p className="px-6 py-12 text-center text-sm text-copy-muted">No shared projects yet</p>}
+          </TabsContent>
+        </Tabs>
+        <div className="border-t border-surface-border p-4">
+          <Button className="w-full" onClick={openCreateDialog}>
+            <Plus />
+            New Project
+          </Button>
+        </div>
+      </aside>
+    </>
   );
 }
