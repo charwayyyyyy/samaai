@@ -4,11 +4,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Project dialogues complete
+- Prisma persistence complete
 
 ## Current Goal
 
-- Keep the project dialogue flows ready for persistence-backed project features.
+- Keep project persistence ready for authenticated project APIs.
 
 ## Completed
 
@@ -68,3 +68,8 @@ Update this file whenever the current phase, active feature, or implementation s
 - Applied explicit dark-theme text tokens to project dialog titles, descriptions, inputs, and content for consistent contrast.
 - `npm run lint` and `npm run build` pass with project dialogues.
 - Addressed project sidebar review findings for closed-state inertness, non-hover action visibility, and nonempty slug consistency.
+- Added Prisma 7 `Project` and `ProjectCollaborator` models with status enum, relations, unique constraints, and required indexes.
+- Added the cached Prisma client singleton with direct PostgreSQL and `prisma+postgres` Accelerate branches.
+- Applied migration `20261008153621_add_projects_and_collaborators` and generated the Prisma client.
+- Added `@prisma/extension-accelerate` for the configured Accelerate branch.
+- `npx prisma validate`, `npm run lint`, `npm run build`, and a read-only Prisma project count query pass.
