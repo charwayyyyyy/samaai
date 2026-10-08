@@ -15,8 +15,13 @@ function createPrismaClient() {
     }).$extends(withAccelerate());
   }
 
-  const adapter = new PrismaPg({ connectionString: databaseUrl });
-  return new PrismaClient({ adapter });
+  const connectionUrl = new URL(databaseUrl);
+  if (connectionUrl.searchParams.get("sslmode") === "require") {
+    connectionUrl.searchParams.set("sslmode", "verify-full");
+  }
+
+  const adapter = new PrismaPg({ connectionString: connectionUrl.toString() });
+  return new PrismaClient({ adapter }).$extends(withAccelerate());
 }
 
 type PrismaClientInstance = ReturnType<typeof createPrismaClient>;

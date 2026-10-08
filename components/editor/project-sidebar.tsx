@@ -9,7 +9,8 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import { useProjectDialogues, type MockProject } from "@/components/editor/use-project-dialogues";
+import { useProjectDialogues } from "@/hooks/use-project-dialogues";
+import type { EditorProject } from "@/lib/project-data";
 
 interface ProjectSidebarProps {
   isOpen: boolean;
@@ -21,9 +22,9 @@ function ProjectItem({
   onRename,
   onDelete,
 }: {
-  project: MockProject;
-  onRename: (project: MockProject) => void;
-  onDelete: (project: MockProject) => void;
+  project: EditorProject;
+  onRename: (project: EditorProject) => void;
+  onDelete: (project: EditorProject) => void;
 }) {
   return (
     <div className="group flex items-center justify-between gap-2 rounded-lg px-3 py-2 hover:bg-subtle">
@@ -46,9 +47,9 @@ function ProjectItem({
 }
 
 function ProjectList({ projects, onRename, onDelete }: {
-  projects: MockProject[];
-  onRename: (project: MockProject) => void;
-  onDelete: (project: MockProject) => void;
+  projects: EditorProject[];
+  onRename: (project: EditorProject) => void;
+  onDelete: (project: EditorProject) => void;
 }) {
   return (
     <div className="space-y-1 px-3 py-4">
@@ -60,7 +61,8 @@ function ProjectList({ projects, onRename, onDelete }: {
 }
 
 export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
-  const { projects, openCreateDialog, openRenameDialog, openDeleteDialog } = useProjectDialogues();
+  const { projects, openCreateDialog, openRenameDialog, openDeleteDialog } =
+    useProjectDialogues();
   const ownedProjects = projects.filter((project) => project.isOwned);
   const sharedProjects = projects.filter((project) => !project.isOwned);
 

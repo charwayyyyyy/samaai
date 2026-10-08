@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useProjectDialogues } from "@/components/editor/use-project-dialogues";
+import { useProjectDialogues } from "@/hooks/use-project-dialogues";
 
 export function ProjectDialogues() {
   const {
@@ -26,6 +26,7 @@ export function ProjectDialogues() {
     createProject,
     renameProject,
     deleteProject,
+    error,
   } = useProjectDialogues();
 
   return (
@@ -59,6 +60,7 @@ export function ProjectDialogues() {
               <p className="text-xs text-copy-muted">
                 Slug: <span className="font-mono text-copy-secondary">{slugPreview || "project-slug"}</span>
               </p>
+              {error && <p className="text-sm text-state-error">{error}</p>}
             </div>
             <DialogFooter>
               <Button onClick={closeDialog} type="button" variant="ghost">
@@ -97,6 +99,7 @@ export function ProjectDialogues() {
                 onChange={(event) => setProjectName(event.target.value)}
                 value={projectName}
               />
+              {error && <p className="mt-2 text-sm text-state-error">{error}</p>}
             </div>
             <DialogFooter>
               <Button onClick={closeDialog} type="button" variant="ghost">
@@ -118,6 +121,7 @@ export function ProjectDialogues() {
               Delete <span className="font-medium text-copy-secondary">{selectedProject?.name}</span>? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
+          {error && <p className="text-sm text-state-error">{error}</p>}
           <DialogFooter>
             <Button onClick={closeDialog} variant="ghost">
               Cancel
