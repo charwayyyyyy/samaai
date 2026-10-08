@@ -15,12 +15,11 @@ function createPrismaClient() {
     }).$extends(withAccelerate());
   }
 
-  const connectionUrl = new URL(databaseUrl);
-  if (connectionUrl.searchParams.get("sslmode") === "require") {
-    connectionUrl.searchParams.set("sslmode", "verify-full");
-  }
-
-  const adapter = new PrismaPg({ connectionString: connectionUrl.toString() });
+  const connectionString = databaseUrl.replace(
+    /([?&]sslmode=)require(&|$)/,
+    "$1verify-full$2",
+  );
+  const adapter = new PrismaPg({ connectionString });
   return new PrismaClient({ adapter }).$extends(withAccelerate());
 }
 

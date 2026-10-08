@@ -1,7 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { createContext, useContext, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 
 import type { EditorProject } from "@/lib/project-data";
 
@@ -76,6 +83,9 @@ export function ProjectDialogProvider({
   initialProjects,
 }: ProjectDialogProviderProps) {
   const router = useRouter();
+  const localChanges = useRef(
+    new Map<string, EditorProject | null>(),
+  );
   const [projects, setProjects] = useState([
     ...initialProjects.owned,
     ...initialProjects.shared,
@@ -87,6 +97,38 @@ export function ProjectDialogProvider({
   const [projectName, setProjectName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const serverProjects = [
+      ...initialProjects.owned,
+      ...initialProjects.shared,
+    ];
+    const serverProjectsById = new Map(
+      serverProjects.map((project) => [project.id, project]),
+    );
+
+    for (const [projectId, localProject] of localChanges.current) {
+      const serverProject = serverProjectsById.get(projectId);
+      if (
+        (localProject && serverProject?.name === localProject.name) ||
+        (!localProject && !serverProject)
+      ) {
+        localChanges.current.delete(projectId);
+      }
+    }
+
+    const reconciledProjects = serverProjects
+      .map((project) => localChanges.current.get(project.id) ?? project)
+      .filter((project): project is EditorProject => project !== null);
+
+    for (const [projectId, localProject] of localChanges.current) {
+      if (localProject && !serverProjectsById.has(projectId)) {
+        reconciledProjects.unshift(localProject);
+      }
+    }
+
+    setProjects(reconciledProjects);
+  }, [initialProjects]);
 
   const openCreateDialog = () => {
     setSelectedProject(null);
@@ -127,10 +169,9 @@ export function ProjectDialogProvider({
         method: "POST",
         body: JSON.stringify({ name }),
       });
-      setProjects((current) => [
-        { ...project, slug: slugify(name), isOwned: true },
-        ...current,
-      ]);
+      const createdProject = { ...project, slug: slugify(name), isOwned: true };
+      localChanges.current.set(createdProject.id, createdProject);
+      setProjects((current) => [createdProject, ...current]);
       setDialog(null);
       setSelectedProject(null);
       router.push(`/editor/${project.id}`);
@@ -159,12 +200,14 @@ export function ProjectDialogProvider({
           body: JSON.stringify({ name }),
         },
       );
+      const renamedProject = {
+        ...selectedProject,
+        name: project.name,
+        slug: slugify(project.name),
+      };
+      localChanges.current.set(project.id, renamedProject);
       setProjects((current) =>
-        current.map((item) =>
-          item.id === project.id
-            ? { ...item, name: project.name, slug: slugify(project.name) }
-            : item,
-        ),
+        current.map((item) => (item.id === project.id ? renamedProject : item)),
       );
       setDialog(null);
       setSelectedProject(null);
@@ -193,6 +236,7 @@ export function ProjectDialogProvider({
         const body = (await response.json()) as { error?: string };
         throw new Error(body.error || "The project could not be deleted.");
       }
+      localChanges.current.set(selectedProject.id, null);
       setProjects((current) =>
         current.filter((item) => item.id !== selectedProject.id),
       );

@@ -83,3 +83,5 @@ Update this file whenever the current phase, active feature, or implementation s
 - Added project workspace navigation and an access-checked `/editor/[projectId]` route.
 - `npm run lint` and `npm run build` pass with editor home wiring.
 - Normalized legacy PostgreSQL `sslmode=require` URLs to `verify-full` before creating the Prisma adapter, preventing the pg-connection-string security warning while preserving existing TLS behavior.
+- Added navigable project links to the sidebar and reconciled refreshed server project data with local create, rename, and delete results.
+- Limited PostgreSQL SSL normalization to the exact `sslmode=require` query value without parsing or altering raw connection strings.

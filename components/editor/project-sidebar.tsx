@@ -1,6 +1,7 @@
 "use client";
 
 import { Pencil, Plus, Trash2, X } from "lucide-react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -28,10 +29,10 @@ function ProjectItem({
 }) {
   return (
     <div className="group flex items-center justify-between gap-2 rounded-lg px-3 py-2 hover:bg-subtle">
-      <div className="min-w-0">
+      <Link className="min-w-0 flex-1" href={`/editor/${project.id}`}>
         <p className="truncate text-sm text-copy-primary">{project.name}</p>
         <p className="truncate font-mono text-xs text-copy-muted">{project.slug}</p>
-      </div>
+      </Link>
       {project.isOwned && (
         <div className="flex shrink-0 gap-1 opacity-100 transition-opacity [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:focus-within:opacity-100">
           <Button aria-label={`Rename ${project.name}`} onClick={() => onRename(project)} size="icon-xs" variant="ghost">
