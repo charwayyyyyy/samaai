@@ -4,11 +4,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Prisma persistence complete
+- Editor home wiring complete
 
 ## Current Goal
 
-- Keep project persistence ready for authenticated project APIs.
+- Continue with the next feature unit from the feature specifications.
 
 ## Completed
 
@@ -73,3 +73,15 @@ Update this file whenever the current phase, active feature, or implementation s
 - Applied migration `20261008153621_add_projects_and_collaborators` and generated the Prisma client.
 - Added `@prisma/extension-accelerate` for the configured Accelerate branch.
 - `npx prisma validate`, `npm run lint`, `npm run build`, and a read-only Prisma project count query pass.
+- Added backend-only project REST APIs for listing, creating, renaming, and deleting projects.
+- Enforced Clerk authentication and owner checks with `401`, `403`, and `404` responses.
+- Added JSON request validation and the `Untitled Project` default name.
+- `npx prisma validate`, `npm run lint`, and `npm run build` pass with the project APIs.
+- Started wiring editor home to server-loaded owned and shared project data from `context/feature-specs/07-wire-editor-home.md`.
+- Added server-side owned/shared project loading with collaborator email access.
+- Replaced mock project mutations with authenticated API create, rename, and delete requests.
+- Added project workspace navigation and an access-checked `/editor/[projectId]` route.
+- `npm run lint` and `npm run build` pass with editor home wiring.
+- Normalized legacy PostgreSQL `sslmode=require` URLs to `verify-full` before creating the Prisma adapter, preventing the pg-connection-string security warning while preserving existing TLS behavior.
+- Added navigable project links to the sidebar and reconciled refreshed server project data with local create, rename, and delete results.
+- Limited PostgreSQL SSL normalization to the exact `sslmode=require` query value without parsing or altering raw connection strings.

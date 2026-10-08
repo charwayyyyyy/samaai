@@ -5,17 +5,21 @@ import { useState, type ReactNode } from "react";
 import { EditorNavbar } from "@/components/editor/editor-navbar";
 import { ProjectDialogues } from "@/components/editor/project-dialogues";
 import { ProjectSidebar } from "@/components/editor/project-sidebar";
-import { ProjectDialogProvider } from "@/components/editor/use-project-dialogues";
+import {
+  ProjectDialogProvider,
+  type EditorProjects,
+} from "@/hooks/use-project-dialogues";
 
 interface EditorLayoutProps {
   children: ReactNode;
+  initialProjects: EditorProjects;
 }
 
-export function EditorLayout({ children }: EditorLayoutProps) {
+export function EditorLayout({ children, initialProjects }: EditorLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <ProjectDialogProvider>
+    <ProjectDialogProvider initialProjects={initialProjects}>
       <div className="min-h-screen bg-base">
         <EditorNavbar
           isSidebarOpen={isSidebarOpen}
