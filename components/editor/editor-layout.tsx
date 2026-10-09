@@ -34,7 +34,10 @@ export function EditorLayout({
 
   return (
     <ProjectDialogProvider initialProjects={initialProjects}>
-      <div className="min-h-screen bg-base">
+      <div
+        className="overflow-hidden bg-base"
+        style={{ height: "100dvh" }}
+      >
         <EditorNavbar
           isAISidebarOpen={isAISidebarOpen}
           isSidebarOpen={isSidebarOpen}
@@ -55,7 +58,12 @@ export function EditorLayout({
             projectId={activeProjectId}
           />
         )}
-        <main className="min-h-screen pt-14">{children}</main>
+        <main
+          className="min-w-0 overflow-hidden pt-14"
+          style={{ height: "100dvh" }}
+        >
+          {children}
+        </main>
         {projectName && (
           <aside
             aria-hidden={!isAISidebarOpen}

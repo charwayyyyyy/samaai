@@ -2,6 +2,8 @@
 
 import { useCallback, useState } from "react";
 
+import { readJsonResponse } from "@/lib/http";
+
 export interface Collaborator {
   email: string;
   displayName: string;
@@ -34,7 +36,7 @@ export function useShareDialogue(projectId: string) {
       const response = await fetch(`/api/projects/${projectId}/collaborators`, {
         cache: "no-store",
       });
-      const body = (await response.json()) as {
+      const body = (await readJsonResponse(response)) as {
         collaborators?: Collaborator[];
         isOwner?: boolean;
         error?: string;
@@ -58,7 +60,7 @@ export function useShareDialogue(projectId: string) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-      const body = (await response.json()) as { error?: string };
+      const body = (await readJsonResponse(response)) as { error?: string };
       if (!response.ok) throw new Error(body.error || "Unable to invite collaborator.");
       setEmail("");
       await open();
@@ -79,7 +81,7 @@ export function useShareDialogue(projectId: string) {
         { method: "DELETE" },
       );
       if (!response.ok) {
-        const body = (await response.json()) as { error?: string };
+        const body = (await readJsonResponse(response)) as { error?: string };
         throw new Error(body.error || "Unable to remove collaborator.");
       }
       setCollaborators((current) =>
