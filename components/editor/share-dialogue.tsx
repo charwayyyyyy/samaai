@@ -24,6 +24,7 @@ interface ShareDialogueProps {
   onOpenChange: (open: boolean) => void;
 }
 
+/** Displays a profile image, falling back to a display-name initial if missing or broken. */
 function CollaboratorAvatar({
   displayName,
   imageUrl,
@@ -48,6 +49,7 @@ function CollaboratorAvatar({
   );
 }
 
+/** Displays project access, link copying, and owner-only invite and removal controls. */
 export function ShareDialogue({
   projectId,
   open,
@@ -55,6 +57,7 @@ export function ShareDialogue({
 }: ShareDialogueProps) {
   const share = useShareDialogue(projectId);
 
+  /** Propagates visibility changes and refreshes access data when the dialog opens. */
   const handleOpenChange = (nextOpen: boolean) => {
     onOpenChange(nextOpen);
     if (nextOpen) void share.open();

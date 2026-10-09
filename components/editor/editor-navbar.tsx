@@ -19,6 +19,7 @@ interface EditorNavbarProps {
   onShare?: () => void;
 }
 
+/** Renders sidebar and account controls, plus sharing and AI actions for a named project. */
 export function EditorNavbar({
   isSidebarOpen,
   onSidebarToggle,

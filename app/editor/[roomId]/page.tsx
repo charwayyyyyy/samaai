@@ -12,6 +12,10 @@ interface WorkspacePageProps {
   params: Promise<{ roomId: string }>;
 }
 
+/**
+ * Loads the accessible workspace and project list for the requested room.
+ * Redirects signed-out visitors and renders access denied for unavailable projects.
+ */
 export default async function WorkspacePage({
   params,
 }: WorkspacePageProps) {
