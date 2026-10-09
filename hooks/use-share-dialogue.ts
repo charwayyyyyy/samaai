@@ -10,6 +10,10 @@ export interface Collaborator {
   isOwner?: boolean;
 }
 
+/**
+ * Manages collaborator loading, mutations, and clipboard feedback for a project.
+ * Exposes form state, loading and error state, and sharing action callbacks.
+ */
 export function useShareDialogue(projectId: string) {
   const [isOpen, setIsOpen] = useState(false);
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
@@ -20,6 +24,7 @@ export function useShareDialogue(projectId: string) {
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
+  /** Opens the sharing state and reloads access entries, recording request errors in state. */
   const open = async () => {
     setIsOpen(true);
     setIsLoading(true);
@@ -45,6 +50,7 @@ export function useShareDialogue(projectId: string) {
     }
   };
 
+  /** Submits the email, clears it and reloads access on success, or records the request error. */
   const invite = async () => {
     setIsSubmitting(true);
     setError(null);
@@ -65,6 +71,7 @@ export function useShareDialogue(projectId: string) {
     }
   };
 
+  /** Revokes access for the given email and removes its local row, or records the request error. */
   const remove = async (collaboratorEmail: string) => {
     setIsSubmitting(true);
     setError(null);
@@ -87,6 +94,7 @@ export function useShareDialogue(projectId: string) {
     }
   };
 
+  /** Copies the workspace URL and shows copied feedback for 1.5 seconds; clipboard errors propagate. */
   const copyProjectLink = async () => {
     await navigator.clipboard.writeText(`${window.location.origin}/editor/${projectId}`);
     setCopied(true);

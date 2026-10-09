@@ -101,3 +101,4 @@ Update this file whenever the current phase, active feature, or implementation s
 - Added Clerk profile enrichment with email-only fallback for unknown users.
 - Added the workspace share dialogue with read-only collaborator access, owner controls, and temporary copied-link feedback.
 - `npm run lint` and `npm run build` pass with the share dialogue.
+- Added JSDoc for workspace and sharing functions to address PR #6 docstring coverage.

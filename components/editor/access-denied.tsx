@@ -1,6 +1,7 @@
 import { LockKeyhole } from "lucide-react";
 import Link from "next/link";
 
+/** Shows the unavailable-project message and a link back to the project list. */
 export function AccessDenied() {
   return (
     <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center bg-base px-6 text-center">

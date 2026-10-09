@@ -12,6 +12,10 @@ interface CollaboratorRouteContext {
   params: Promise<{ projectId: string }>;
 }
 
+/**
+ * Resolves the signed-in identity and the project it can access.
+ * Returns null when signed out, or a null project when access is unavailable.
+ */
 async function getProjectAccess(projectId: string) {
   const identity = await getCurrentIdentity();
   if (!identity) return null;
@@ -21,6 +25,10 @@ async function getProjectAccess(projectId: string) {
   };
 }
 
+/**
+ * Lists project access entries for an authenticated owner or collaborator.
+ * Falls back to the owner's identity (or an empty list for collaborators) if loading fails.
+ */
 export async function GET(
   _request: Request,
   context: CollaboratorRouteContext,
@@ -60,6 +68,10 @@ export async function GET(
   });
 }
 
+/**
+ * Grants collaborator access by email after authenticating the project owner.
+ * Normalizes and validates the email, then returns the existing or created record.
+ */
 export async function POST(
   request: Request,
   context: CollaboratorRouteContext,
@@ -91,6 +103,10 @@ export async function POST(
   return NextResponse.json({ collaborator }, { status: 201 });
 }
 
+/**
+ * Removes access for the email query parameter after authenticating the owner.
+ * Returns an empty 204 response even when no matching collaborator exists.
+ */
 export async function DELETE(
   request: Request,
   context: CollaboratorRouteContext,

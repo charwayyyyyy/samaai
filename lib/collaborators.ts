@@ -10,6 +10,11 @@ export interface ProjectCollaboratorView {
   isOwner?: boolean;
 }
 
+/**
+ * Loads the owner followed by collaborators, enriching entries with Clerk profiles.
+ * Missing profiles use fallback names and no images; Clerk failures retain database entries.
+ * The optional ownerEmail supplies an owner fallback; database errors propagate.
+ */
 export async function getProjectCollaborators(
   projectId: string,
   ownerId: string,
