@@ -7,6 +7,10 @@ export interface CurrentIdentity {
   email: string | undefined;
 }
 
+function normalizeEmail(email: string | undefined) {
+  return email?.trim().toLowerCase();
+}
+
 /** Returns the Clerk user's ID and optional primary email, or null when signed out. */
 export async function getCurrentIdentity(): Promise<CurrentIdentity | null> {
   const user = await currentUser();
@@ -17,7 +21,7 @@ export async function getCurrentIdentity(): Promise<CurrentIdentity | null> {
 
   return {
     userId: user.id,
-    email: user.primaryEmailAddress?.emailAddress,
+    email: normalizeEmail(user.primaryEmailAddress?.emailAddress),
   };
 }
 

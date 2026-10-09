@@ -22,6 +22,10 @@ function slugify(value: string) {
   );
 }
 
+function normalizeEmail(email: string | undefined) {
+  return email?.trim().toLowerCase();
+}
+
 function toEditorProject(
   project: { id: string; name: string },
   isOwned: boolean,
@@ -42,7 +46,9 @@ export async function getEditorProjects(
     where: {
       OR: [
         { ownerId: userId },
-        ...(email ? [{ collaborators: { some: { email } } }] : []),
+        ...(normalizeEmail(email)
+          ? [{ collaborators: { some: { email: normalizeEmail(email) } } }]
+          : []),
       ],
     },
     select: {
@@ -73,7 +79,9 @@ export async function getEditorProject(
       id: projectId,
       OR: [
         { ownerId: userId },
-        ...(email ? [{ collaborators: { some: { email } } }] : []),
+        ...(normalizeEmail(email)
+          ? [{ collaborators: { some: { email: normalizeEmail(email) } } }]
+          : []),
       ],
     },
     select: {

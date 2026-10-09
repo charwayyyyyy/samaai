@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export interface Collaborator {
   email: string;
@@ -24,8 +24,7 @@ export function useShareDialogue(projectId: string) {
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
-  /** Opens the sharing state and reloads access entries, recording request errors in state. */
-  const open = async () => {
+  const open = useCallback(async () => {
     setIsOpen(true);
     setIsLoading(true);
     setError(null);
@@ -48,10 +47,9 @@ export function useShareDialogue(projectId: string) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [projectId]);
 
-  /** Submits the email, clears it and reloads access on success, or records the request error. */
-  const invite = async () => {
+  const invite = useCallback(async () => {
     setIsSubmitting(true);
     setError(null);
     try {
@@ -69,7 +67,7 @@ export function useShareDialogue(projectId: string) {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [email, open, projectId]);
 
   /** Revokes access for the given email and removes its local row, or records the request error. */
   const remove = async (collaboratorEmail: string) => {

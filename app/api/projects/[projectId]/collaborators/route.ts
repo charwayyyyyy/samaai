@@ -6,6 +6,7 @@ import {
   getProjectForIdentity,
 } from "@/lib/project-access";
 import { prisma } from "@/lib/prisma";
+import { clerkClient } from "@clerk/nextjs/server";
 import { isJsonObject, jsonError, readJsonBody } from "@/lib/project-api";
 
 interface CollaboratorRouteContext {
@@ -94,9 +95,25 @@ export async function POST(
     return jsonError("Enter a valid collaborator email.", 400);
   }
 
+  let storedEmail = email;
+  try {
+    const client = await clerkClient();
+    const matchingUsers = await client.users.getUserList({
+      emailAddress: [email],
+      limit: 1,
+    });
+    const primaryEmail =
+      matchingUsers.data[0]?.primaryEmailAddress?.emailAddress;
+    if (primaryEmail) {
+      storedEmail = primaryEmail.trim().toLowerCase();
+    }
+  } catch (error) {
+    console.error("Unable to resolve invited collaborator profile.", error);
+  }
+
   const collaborator = await prisma.projectCollaborator.upsert({
-    where: { projectId_email: { projectId: project.id, email } },
-    create: { projectId: project.id, email },
+    where: { projectId_email: { projectId: project.id, email: storedEmail } },
+    create: { projectId: project.id, email: storedEmail },
     update: {},
   });
 

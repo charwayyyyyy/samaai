@@ -94,6 +94,9 @@ export function ProjectSidebar({
     useProjectDialogues();
   const ownedProjects = projects.filter((project) => project.isOwned);
   const sharedProjects = projects.filter((project) => !project.isOwned);
+  const activeTab = sharedProjects.some((project) => project.id === activeProjectId)
+    ? "shared"
+    : "my-projects";
 
   return (
     <>
@@ -119,7 +122,11 @@ export function ProjectSidebar({
             <X />
           </Button>
         </div>
-        <Tabs className="flex min-h-0 flex-1" defaultValue="my-projects">
+        <Tabs
+          className="flex min-h-0 flex-1"
+          defaultValue={activeTab}
+          key={`${activeProjectId ?? "no-active"}:${activeTab}`}
+        >
           <TabsList className="mx-4 mt-4 w-auto shrink-0 bg-subtle">
             <TabsTrigger value="my-projects">My Projects</TabsTrigger>
             <TabsTrigger value="shared">Shared</TabsTrigger>

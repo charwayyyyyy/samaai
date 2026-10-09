@@ -96,6 +96,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - Fixed share access loading so Clerk profile enrichment failures do not hide the owner invite form or access rows.
 - Added owner/email fallbacks and resilient collaborator avatar rendering for unavailable Clerk profile images.
 - Hardened the collaborators GET response with an owner fallback and no-store client loading so the owner invite field and access row cannot be hidden by optional enrichment failures.
+- Fixed share loading from the navbar, synchronized the project sidebar tab with the active project, batched Clerk profile lookups, and normalized invited/current collaborator emails for access checks.
 - Started the share dialogue implementation from `context/feature-specs/09-share-dialogue.md`.
 - Added collaborator list, invite, and remove APIs with server-side owner enforcement.
 - Added Clerk profile enrichment with email-only fallback for unknown users.
