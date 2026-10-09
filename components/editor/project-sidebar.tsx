@@ -16,20 +16,29 @@ import type { EditorProject } from "@/lib/project-data";
 interface ProjectSidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  activeProjectId?: string;
 }
 
 function ProjectItem({
   project,
   onRename,
   onDelete,
+  activeProjectId,
 }: {
   project: EditorProject;
   onRename: (project: EditorProject) => void;
   onDelete: (project: EditorProject) => void;
+  activeProjectId?: string;
 }) {
   return (
-    <div className="group flex items-center justify-between gap-2 rounded-lg px-3 py-2 hover:bg-subtle">
-      <Link className="min-w-0 flex-1" href={`/editor/${project.id}`}>
+    <div className={`group flex items-center justify-between gap-2 rounded-lg px-3 py-2 hover:bg-subtle ${
+      project.id === activeProjectId ? "bg-subtle" : ""
+    }`}>
+      <Link
+        aria-current={project.id === activeProjectId ? "page" : undefined}
+        className="min-w-0 flex-1"
+        href={`/editor/${project.id}`}
+      >
         <p className="truncate text-sm text-copy-primary">{project.name}</p>
         <p className="truncate font-mono text-xs text-copy-muted">{project.slug}</p>
       </Link>
@@ -47,21 +56,37 @@ function ProjectItem({
   );
 }
 
-function ProjectList({ projects, onRename, onDelete }: {
+function ProjectList({
+  projects,
+  onRename,
+  onDelete,
+  activeProjectId,
+}: {
   projects: EditorProject[];
   onRename: (project: EditorProject) => void;
   onDelete: (project: EditorProject) => void;
+  activeProjectId?: string;
 }) {
   return (
     <div className="space-y-1 px-3 py-4">
       {projects.map((project) => (
-        <ProjectItem key={project.id} onDelete={onDelete} onRename={onRename} project={project} />
+        <ProjectItem
+          activeProjectId={activeProjectId}
+          key={project.id}
+          onDelete={onDelete}
+          onRename={onRename}
+          project={project}
+        />
       ))}
     </div>
   );
 }
 
-export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
+export function ProjectSidebar({
+  isOpen,
+  onClose,
+  activeProjectId,
+}: ProjectSidebarProps) {
   const { projects, openCreateDialog, openRenameDialog, openDeleteDialog } =
     useProjectDialogues();
   const ownedProjects = projects.filter((project) => project.isOwned);
@@ -97,10 +122,10 @@ export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
             <TabsTrigger value="shared">Shared</TabsTrigger>
           </TabsList>
           <TabsContent className="min-h-0 flex-1 overflow-y-auto" value="my-projects">
-            {ownedProjects.length ? <ProjectList onDelete={openDeleteDialog} onRename={openRenameDialog} projects={ownedProjects} /> : <p className="px-6 py-12 text-center text-sm text-copy-muted">No projects yet</p>}
+            {ownedProjects.length ? <ProjectList activeProjectId={activeProjectId} onDelete={openDeleteDialog} onRename={openRenameDialog} projects={ownedProjects} /> : <p className="px-6 py-12 text-center text-sm text-copy-muted">No projects yet</p>}
           </TabsContent>
           <TabsContent className="min-h-0 flex-1 overflow-y-auto" value="shared">
-            {sharedProjects.length ? <ProjectList onDelete={openDeleteDialog} onRename={openRenameDialog} projects={sharedProjects} /> : <p className="px-6 py-12 text-center text-sm text-copy-muted">No shared projects yet</p>}
+            {sharedProjects.length ? <ProjectList activeProjectId={activeProjectId} onDelete={openDeleteDialog} onRename={openRenameDialog} projects={sharedProjects} /> : <p className="px-6 py-12 text-center text-sm text-copy-muted">No shared projects yet</p>}
           </TabsContent>
         </Tabs>
         <div className="border-t border-surface-border p-4">
