@@ -19,6 +19,7 @@ interface ProjectSidebarProps {
   activeProjectId?: string;
 }
 
+/** Renders a project link with active-page highlighting and owner-only rename/delete actions. */
 function ProjectItem({
   project,
   onRename,
@@ -56,6 +57,7 @@ function ProjectItem({
   );
 }
 
+/** Renders project rows with shared action callbacks and the active project marker. */
 function ProjectList({
   projects,
   onRename,
@@ -82,6 +84,7 @@ function ProjectList({
   );
 }
 
+/** Displays owned and shared project tabs with creation and management controls. */
 export function ProjectSidebar({
   isOpen,
   onClose,

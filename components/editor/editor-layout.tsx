@@ -18,6 +18,10 @@ interface EditorLayoutProps {
   projectName?: string;
 }
 
+/**
+ * Wraps editor content with project dialogs, navigation, and sidebar state.
+ * Adds sharing controls and the AI placeholder when project context is supplied.
+ */
 export function EditorLayout({
   children,
   initialProjects,
