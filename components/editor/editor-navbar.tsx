@@ -6,9 +6,22 @@ import {
   PanelLeftOpen,
   Share2,
 } from "lucide-react";
-import { UserButton } from "@clerk/nextjs";
+import dynamic from "next/dynamic";
 
 import { Button } from "@/components/ui/button";
+
+const UserButton = dynamic(
+  () => import("@clerk/nextjs").then(({ UserButton: ClerkUserButton }) => ClerkUserButton),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        aria-hidden="true"
+        className="h-8 w-8 rounded-full bg-subtle"
+      />
+    ),
+  },
+);
 
 interface EditorNavbarProps {
   isSidebarOpen: boolean;

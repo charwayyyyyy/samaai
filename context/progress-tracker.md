@@ -4,11 +4,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Share dialogue complete
+- Base collaborative canvas complete
 
 ## Current Goal
 
-- Continue with the next feature unit from the feature specifications.
+- Build the next feature unit from the feature specifications.
 
 ## Completed
 
@@ -32,7 +32,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## In Progress
 
-- Build the next feature unit from the feature specifications.
+- Connect the authenticated Liveblocks room to the editor canvas.
 
 ## Next Up
 
@@ -96,6 +96,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - Fixed share access loading so Clerk profile enrichment failures do not hide the owner invite form or access rows.
 - Added owner/email fallbacks and resilient collaborator avatar rendering for unavailable Clerk profile images.
 - Hardened the collaborators GET response with an owner fallback and no-store client loading so the owner invite field and access row cannot be hidden by optional enrichment failures.
+- Isolated the Clerk `UserButton` from server rendering with a stable loading placeholder to prevent editor-navbar hydration mismatches.
 - Fixed share loading from the navbar, synchronized the project sidebar tab with the active project, batched Clerk profile lookups, and normalized invited/current collaborator emails for access checks.
 - Started the share dialogue implementation from `context/feature-specs/09-share-dialogue.md`.
 - Added collaborator list, invite, and remove APIs with server-side owner enforcement.
@@ -103,3 +104,24 @@ Update this file whenever the current phase, active feature, or implementation s
 - Added the workspace share dialogue with read-only collaborator access, owner controls, and temporary copied-link feedback.
 - `npm run lint` and `npm run build` pass with the share dialogue.
 - Added JSDoc for workspace and sharing functions to address PR #6 docstring coverage.
+- Started Liveblocks setup from `context/feature-specs/10-liveblocks-setup.md`.
+- Added typed Presence and UserMeta definitions, a cached Liveblocks server client, deterministic cursor colors, and a Clerk/project-access protected Liveblocks auth route.
+- Added `@liveblocks/node` for server-side room creation and session authorization.
+- Liveblocks setup from `context/feature-specs/10-liveblocks-setup.md` is complete; `npm run lint` and `npm run build` pass.
+- Started the base canvas implementation from `context/feature-specs/11-base-canvas.md`.
+- Replaced the workspace placeholder with a Liveblocks RoomProvider and typed React Flow canvas.
+- Added typed canvas node and edge contracts, empty synchronized graph state, loose connections, fit-to-view, MiniMap, dot background, loading fallback, and connection error fallback.
+- Base canvas implementation from `context/feature-specs/11-base-canvas.md` is complete.
+- Fixed the runtime canvas connection error by mounting `RoomProvider` under `LiveblocksProvider` with the authenticated `/api/liveblocks-auth` endpoint.
+- Upgraded the collaborative canvas to a functional React Flow workspace with synced custom nodes, draggable/pannable/zoomable navigation, double-click and toolbar node creation, connectable handles, synced deletion, React Flow controls, and a pannable/zoomable minimap.
+- Added the required `ReactFlowProvider` ancestor so the interactive canvas navigation context is available to `useReactFlow`.
+- Hardened share-dialogue collaborator requests so API failures return JSON and non-JSON responses are handled without a parsing crash.
+- Implemented the shape panel from `context/feature-specs/12-shape-panel.md` with draggable shape payloads, drop-to-create nodes, default sizes, shape-based timestamp/counter IDs, and the basic bordered node renderer.
+- Fixed canvas visibility by giving the React Flow surface an explicit positioned height and rendering the shape toolbar as a guaranteed bottom-center overlay inside the canvas wrapper.
+- Fixed the zero-height workspace chain by making the editor shell viewport-sized and allowing the canvas to fill the available area behind the fixed sidebars.
+- Corrected the shape toolbar containing block so it stays at the bottom of the canvas rather than appearing at the top of the React Flow renderer.
+- Forced React Flow and the minimap to use the dark color mode and surface styling for readable canvas chrome.
+- Browser verification confirms the toolbar is visible at the bottom, the dotted canvas and nodes render, and `npm run build` passes.
+- Hardened shape dragging with an explicit canvas-node payload type, dual MIME payload support, runtime payload validation, and capture-phase canvas drag handlers so React Flow cannot intercept the drop before node creation.
+- Updated the canvas node renderer to use each synchronized node's `data.shape`, rendering distinct rectangle, pill, circle, diamond, cylinder, and hexagon geometry instead of displaying every dropped node as a rectangle.
+- Browser verification confirms cylinder, circle, hexagon, diamond, and rectangle drops retain their individual shape metadata and render the corresponding geometry.
