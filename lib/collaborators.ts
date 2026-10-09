@@ -2,6 +2,8 @@ import { clerkClient } from "@clerk/nextjs/server";
 
 import { prisma } from "@/lib/prisma";
 
+const CLERK_EMAIL_BATCH_SIZE = 100;
+
 export interface ProjectCollaboratorView {
   email: string;
   displayName: string;
@@ -23,18 +25,31 @@ export async function getProjectCollaborators(
 
   let owner: Awaited<ReturnType<Awaited<ReturnType<typeof clerkClient>>["users"]["getUser"]>> | null =
     null;
-  let users: { data: Awaited<ReturnType<Awaited<ReturnType<typeof clerkClient>>["users"]["getUserList"]>>["data"] } = {
-    data: [],
-  };
+  const users: Awaited<
+    ReturnType<
+      Awaited<ReturnType<typeof clerkClient>>["users"]["getUserList"]
+    >
+  >["data"] = [];
 
   try {
     const client = await clerkClient();
     owner = await client.users.getUser(ownerId);
     if (collaborators.length) {
-      users = await client.users.getUserList({
-        emailAddress: collaborators.map(({ email }) => email),
-        limit: collaborators.length,
-      });
+      for (
+        let start = 0;
+        start < collaborators.length;
+        start += CLERK_EMAIL_BATCH_SIZE
+      ) {
+        const batch = collaborators.slice(
+          start,
+          start + CLERK_EMAIL_BATCH_SIZE,
+        );
+        const result = await client.users.getUserList({
+          emailAddress: batch.map(({ email }) => email),
+          limit: CLERK_EMAIL_BATCH_SIZE,
+        });
+        users.push(...result.data);
+      }
     }
   } catch (error) {
     // Database access data remains useful when Clerk profile enrichment is unavailable.
@@ -42,7 +57,7 @@ export async function getProjectCollaborators(
   }
 
   const usersByEmail = new Map(
-    users.data.flatMap((user) =>
+    users.flatMap((user) =>
       user.emailAddresses.map((email) => [email.emailAddress.toLowerCase(), user]),
     ),
   );

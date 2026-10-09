@@ -1,7 +1,7 @@
 "use client";
 
 import { Link2, Mail, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -54,10 +54,14 @@ export function ShareDialogue({
   onOpenChange,
 }: ShareDialogueProps) {
   const share = useShareDialogue(projectId);
+  const { open: loadShareData } = share;
+
+  useEffect(() => {
+    if (open) void loadShareData();
+  }, [loadShareData, open]);
 
   const handleOpenChange = (nextOpen: boolean) => {
     onOpenChange(nextOpen);
-    if (nextOpen) void share.open();
   };
 
   return (
