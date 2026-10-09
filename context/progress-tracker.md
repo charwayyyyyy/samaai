@@ -4,7 +4,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Editor home wiring complete
+- Share dialogue complete
 
 ## Current Goal
 
@@ -32,7 +32,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## In Progress
 
-- None.
+- Build the next feature unit from the feature specifications.
 
 ## Next Up
 
@@ -85,3 +85,19 @@ Update this file whenever the current phase, active feature, or implementation s
 - Normalized legacy PostgreSQL `sslmode=require` URLs to `verify-full` before creating the Prisma adapter, preventing the pg-connection-string security warning while preserving existing TLS behavior.
 - Added navigable project links to the sidebar and reconciled refreshed server project data with local create, rename, and delete results.
 - Limited PostgreSQL SSL normalization to the exact `sslmode=require` query value without parsing or altering raw connection strings.
+- Started the editor workspace shell from `context/feature-specs/08-editor-workspace-shell.md`.
+- Added server-side Clerk identity and owner/collaborator project access helpers.
+- Added `AccessDenied` for missing or unauthorized workspaces.
+- Added the authenticated `/editor/[roomId]` workspace shell with project context, active sidebar highlighting, navbar actions, canvas placeholder, and AI sidebar placeholder.
+- `npm run lint` and `npm run build` pass with the workspace shell.
+- Improved the share dialogue to match the dark workspace reference, including explicit readable text tokens, workspace-link copying, owner badges, and visible owner invite controls.
+- Included the project owner in the access list while retaining Clerk-enriched collaborator profiles and owner-only management actions.
+- Refined the workspace chrome with labeled Share and AI actions to match the share/workspace reference interface.
+- Fixed share access loading so Clerk profile enrichment failures do not hide the owner invite form or access rows.
+- Added owner/email fallbacks and resilient collaborator avatar rendering for unavailable Clerk profile images.
+- Hardened the collaborators GET response with an owner fallback and no-store client loading so the owner invite field and access row cannot be hidden by optional enrichment failures.
+- Started the share dialogue implementation from `context/feature-specs/09-share-dialogue.md`.
+- Added collaborator list, invite, and remove APIs with server-side owner enforcement.
+- Added Clerk profile enrichment with email-only fallback for unknown users.
+- Added the workspace share dialogue with read-only collaborator access, owner controls, and temporary copied-link feedback.
+- `npm run lint` and `npm run build` pass with the share dialogue.
