@@ -6,6 +6,7 @@ interface KeyboardShortcutHandlers {
   redo: () => void;
 }
 
+/** Returns true when the event target is an input, textarea, select, or other editable element. */
 function isEditableTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
 
@@ -17,6 +18,10 @@ function isEditableTarget(target: EventTarget | null): boolean {
   );
 }
 
+/**
+ * Binds window-level keyboard shortcuts for zooming the given React Flow instance
+ * and for undo/redo, ignoring key presses while an editable element is focused.
+ */
 export function useKeyboardShortcuts<
   NodeType extends Node,
   EdgeType extends Edge,
