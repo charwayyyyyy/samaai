@@ -4,7 +4,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Base collaborative canvas complete
+- Canvas ergonomics complete
 
 ## Current Goal
 
@@ -32,7 +32,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## In Progress
 
-- Connect the authenticated Liveblocks room to the editor canvas.
+- Continue with the next canvas feature specification.
 
 ## Next Up
 
@@ -125,3 +125,12 @@ Update this file whenever the current phase, active feature, or implementation s
 - Hardened shape dragging with an explicit canvas-node payload type, dual MIME payload support, runtime payload validation, and capture-phase canvas drag handlers so React Flow cannot intercept the drop before node creation.
 - Updated the canvas node renderer to use each synchronized node's `data.shape`, rendering distinct rectangle, pill, circle, diamond, cylinder, and hexagon geometry instead of displaying every dropped node as a rectangle.
 - Browser verification confirms cylinder, circle, hexagon, diamond, and rectangle drops retain their individual shape metadata and render the corresponding geometry.
+- Implemented the node-shape feature from `context/feature-specs/13-node-shape.md`: CSS and SVG shapes now use subtle resting borders and brighter selected borders, and dragging a shape displays a cursor-following ghost preview using the same shape and default size as the eventual node.
+- Implemented node editing from `context/feature-specs/14-node-editing.md`: selected nodes expose subtle minimum-bounded resize handles, and double-clicking a node opens centered inline label editing with synchronized updates, placeholder text, blur/Escape completion, and protected text interactions.
+- Implemented the node color toolbar from `context/feature-specs/15-node-color-toolbar.md`: selected nodes show predefined palette swatches above the node, active colors are highlighted, swatches use controlled paired-color hover glows, and color changes synchronously update each node's background and text colors without server calls.
+- Implemented edge behavior from `context/feature-specs/16-edge-behavior.md`: connections now use the custom `canvasEdge` smooth-step renderer with rounded arrowed strokes, subtle hover/selection emphasis and a wider invisible hit area; edge labels use React Flow path midpoint coordinates, inline growing inputs, blur/Enter/Escape saving, faint active-edge hints, and synchronized Liveblocks edge updates.
+- Implemented canvas ergonomics from `context/feature-specs/17-canvas-ergonomics.md`: added a bottom-left pill control bar for animated zoom, fit view, Liveblocks undo, and Liveblocks redo actions; history buttons reflect available history state, and keyboard shortcuts support zoom, undo, and redo while ignoring editable fields.
+- `npm run lint` and `npm run build` pass after the canvas ergonomics implementation. Lint retains the existing `share-dialogue.tsx` `<img>` optimization warning.
+- Implemented starter templates from `context/feature-specs/18-starter-template.md`: added Microservices, CI/CD Pipeline, and Event-driven system templates using the shared canvas node and edge types, with lightweight fit-to-viewport previews in a scrollable import dialog.
+- Added a Templates entry point to the editor navbar. Importing a starter template clears the current synchronized nodes and edges, loads the selected template into the active Liveblocks room, and fits the React Flow viewport to the imported graph.
+- `npm run lint` and `npm run build` pass after the starter template implementation. Lint retains the existing `share-dialogue.tsx` `<img>` optimization warning.

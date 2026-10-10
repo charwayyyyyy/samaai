@@ -2,6 +2,7 @@
 
 import {
   Bot,
+  LayoutTemplate,
   PanelLeftClose,
   PanelLeftOpen,
   Share2,
@@ -30,6 +31,7 @@ interface EditorNavbarProps {
   isAISidebarOpen?: boolean;
   onAIToggle?: () => void;
   onShare?: () => void;
+  onStarterTemplates?: () => void;
 }
 
 /** Renders sidebar and account controls, plus sharing and AI actions for a named project. */
@@ -40,6 +42,7 @@ export function EditorNavbar({
   isAISidebarOpen = false,
   onAIToggle,
   onShare,
+  onStarterTemplates,
 }: EditorNavbarProps) {
   return (
     <nav className="fixed inset-x-0 top-0 z-40 flex h-14 items-center border-b border-surface-border bg-surface">
@@ -71,6 +74,15 @@ export function EditorNavbar({
             >
               <Share2 />
               <span className="hidden sm:inline">Share</span>
+            </Button>
+            <Button
+              aria-label="Open starter templates"
+              className="ml-2 gap-2 text-copy-primary"
+              onClick={onStarterTemplates}
+              variant="outline"
+            >
+              <LayoutTemplate />
+              <span className="hidden lg:inline">Templates</span>
             </Button>
             <Button
               aria-label={isAISidebarOpen ? "Close AI sidebar" : "Open AI sidebar"}
