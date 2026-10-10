@@ -32,6 +32,10 @@ interface StarterTemplatesProviderProps {
   children: ReactNode;
 }
 
+/**
+ * Supplies the `openTemplates` action to descendants and renders the starter
+ * templates modal, dispatching a `samaai:import-template` event on import.
+ */
 export function StarterTemplatesProvider({
   children,
 }: StarterTemplatesProviderProps) {
@@ -65,6 +69,7 @@ export function StarterTemplatesProvider({
   );
 }
 
+/** Returns the starter templates context, throwing when used outside `StarterTemplatesProvider`. */
 export function useStarterTemplates() {
   const context = useContext(StarterTemplatesContext);
   if (!context) {
@@ -81,6 +86,7 @@ interface StarterTemplatesModalProps {
   onImport: (template: CanvasTemplate) => void;
 }
 
+/** Renders the dialog listing available canvas templates for the user to import. */
 function StarterTemplatesModal({
   onImport,
   onOpenChange,
@@ -126,6 +132,7 @@ function StarterTemplatesModal({
   );
 }
 
+/** Renders a scaled SVG/HTML preview of a template's nodes and edges. */
 function TemplatePreview({ template }: { template: CanvasTemplate }) {
   const width = 280;
   const height = 150;
@@ -198,6 +205,7 @@ function TemplatePreview({ template }: { template: CanvasTemplate }) {
   );
 }
 
+/** Returns a template node's rendered width and height, falling back to default dimensions. */
 function getNodeSize(node: CanvasTemplate["nodes"][number]) {
   return {
     width: dimensionToNumber(node.style?.width, 180),
@@ -205,6 +213,7 @@ function getNodeSize(node: CanvasTemplate["nodes"][number]) {
   };
 }
 
+/** Coerces a style dimension value to a finite number, or returns the fallback. */
 function dimensionToNumber(
   value: string | number | undefined,
   fallback: number,
@@ -216,6 +225,7 @@ function dimensionToNumber(
       : fallback;
 }
 
+/** Computes the bounding box enclosing all of a template's nodes. */
 function getTemplateBounds(template: CanvasTemplate) {
   const positions = template.nodes.map((node) => {
     const size = getNodeSize(node);
@@ -233,11 +243,13 @@ function getTemplateBounds(template: CanvasTemplate) {
   return { minX, minY, width: maxX - minX, height: maxY - minY };
 }
 
+/** Returns the CSS border radius used to approximate a shape in the preview. */
 function getBorderRadius(shape: CanvasShape) {
   if (shape === "circle" || shape === "pill") return "999px";
   return shape === "cylinder" ? "12px" : "6px";
 }
 
+/** Returns the CSS clip-path used to approximate a shape in the preview. */
 function getClipPath(shape: CanvasShape) {
   if (shape === "diamond") return "polygon(50% 0, 100% 50%, 50% 100%, 0 50%)";
   if (shape === "hexagon") {
