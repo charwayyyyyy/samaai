@@ -53,6 +53,7 @@ import {
   RoomProvider,
   useCanRedo,
   useCanUndo,
+  useHistory,
   useRedo,
   useUndo,
 } from "@liveblocks/react/suspense";
@@ -251,6 +252,10 @@ function CanvasNodeView({ id, data, selected }: NodeProps<CanvasNode>) {
   const [isEditing, setIsEditing] = useState(false);
   const [draftLabel, setDraftLabel] = useState(data.label);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  // Stores the label at the moment editing begins so Escape can restore it.
+  const originalLabelRef = useRef(data.label);
+  // Set to true when the user cancels with Escape to suppress the blur commit.
+  const cancelledRef = useRef(false);
 
   useEffect(() => {
     if (isEditing) {
@@ -260,6 +265,11 @@ function CanvasNodeView({ id, data, selected }: NodeProps<CanvasNode>) {
   }, [isEditing]);
 
   const finishEditing = () => {
+    if (cancelledRef.current) {
+      cancelledRef.current = false;
+      setIsEditing(false);
+      return;
+    }
     const nextLabel = draftLabel.trim();
     if (nextLabel !== data.label) {
       editing?.updateLabel(id, nextLabel);
@@ -276,6 +286,8 @@ function CanvasNodeView({ id, data, selected }: NodeProps<CanvasNode>) {
       style={{ color: color.text }}
       onDoubleClick={(event) => {
         event.stopPropagation();
+        originalLabelRef.current = data.label;
+        cancelledRef.current = false;
         setDraftLabel(data.label);
         setIsEditing(true);
       }}
@@ -315,10 +327,18 @@ function CanvasNodeView({ id, data, selected }: NodeProps<CanvasNode>) {
           aria-label="Edit node label"
           className="nodrag nowheel relative z-10 h-8 w-full resize-none overflow-hidden rounded-md border border-brand bg-base/90 px-2 py-1 text-center text-sm text-copy-primary outline-none"
           onBlur={finishEditing}
-          onChange={(event) => setDraftLabel(event.target.value)}
+          onChange={(event) => {
+            const next = event.target.value;
+            setDraftLabel(next);
+            editing?.updateLabel(id, next);
+          }}
           onKeyDown={(event) => {
             if (event.key === "Escape") {
-              setDraftLabel(data.label);
+              event.preventDefault();
+              cancelledRef.current = true;
+              // Restore original label in shared state before closing.
+              editing?.updateLabel(id, originalLabelRef.current);
+              setDraftLabel(originalLabelRef.current);
               setIsEditing(false);
             }
           }}
@@ -646,6 +666,7 @@ function FlowCanvasContent() {
   const redo = useRedo();
   const canUndo = useCanUndo();
   const canRedo = useCanRedo();
+  const history = useHistory();
   useKeyboardShortcuts(reactFlow, { redo, undo });
   const nodeCounter = useRef(0);
   const fitAfterImport = useRef(false);
@@ -659,34 +680,32 @@ function FlowCanvasContent() {
 
   const importTemplate = useCallback(
     (template: CanvasTemplate) => {
+      history.pause();
       onDelete({ nodes, edges });
       nodeCounter.current = template.nodes.length;
       fitAfterImport.current = true;
       window.setTimeout(() => {
-        template.nodes.forEach((node) => {
-          onNodesChange([
-            {
-              type: "add",
-              item: {
-                ...node,
-                data: { ...node.data },
-                position: { ...node.position },
-                style: node.style ? { ...node.style } : undefined,
-              },
+        onNodesChange(
+          template.nodes.map((node) => ({
+            type: "add" as const,
+            item: {
+              ...node,
+              data: { ...node.data },
+              position: { ...node.position },
+              style: node.style ? { ...node.style } : undefined,
             },
-          ]);
-        });
-        template.edges.forEach((edge) => {
-          onEdgesChange([
-            {
-              type: "add",
-              item: { ...edge, data: edge.data ? { ...edge.data } : {} },
-            },
-          ]);
-        });
+          })),
+        );
+        onEdgesChange(
+          template.edges.map((edge) => ({
+            type: "add" as const,
+            item: { ...edge, data: edge.data ? { ...edge.data } : {} },
+          })),
+        );
+        history.resume();
       }, 0);
     },
-    [edges, nodes, onDelete, onEdgesChange, onNodesChange],
+    [edges, history, nodes, onDelete, onEdgesChange, onNodesChange],
   );
 
   useEffect(() => {

@@ -28,13 +28,13 @@ export function useKeyboardShortcuts<
     const handleKeyDown = (event: KeyboardEvent) => {
       if (isEditableTarget(event.target)) return;
 
-      if (event.key === "+" || event.key === "=") {
+      if ((event.key === "+" || event.key === "=") && !event.ctrlKey && !event.metaKey && !event.altKey) {
         event.preventDefault();
         reactFlow.zoomIn({ duration: 180 });
         return;
       }
 
-      if (event.key === "-") {
+      if (event.key === "-" && !event.ctrlKey && !event.metaKey && !event.altKey) {
         event.preventDefault();
         reactFlow.zoomOut({ duration: 180 });
         return;
