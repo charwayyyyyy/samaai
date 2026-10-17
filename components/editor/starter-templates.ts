@@ -23,6 +23,7 @@ type TemplateNodeOptions = {
   color: keyof typeof NODE_COLORS;
 };
 
+/** Builds a canvas node for a starter template from the given position, shape, and color. */
 function templateNode({
   id,
   label,
@@ -40,6 +41,7 @@ function templateNode({
   };
 }
 
+/** Builds a canvas edge connecting two template nodes, with an optional label. */
 function templateEdge(
   id: string,
   source: string,

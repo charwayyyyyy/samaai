@@ -141,6 +141,7 @@ interface CanvasNodeEditingContextValue {
 const CanvasNodeEditingContext =
   createContext<CanvasNodeEditingContextValue | null>(null);
 
+/** Renders a canvas edge with a double-click-to-edit label and a smooth-step path. */
 function CanvasEdgeView({
   id,
   sourceX,
@@ -246,6 +247,7 @@ function CanvasEdgeView({
   );
 }
 
+/** Renders a canvas node's shape and label, supporting double-click editing and a color toolbar when selected. */
 function CanvasNodeView({ id, data, selected }: NodeProps<CanvasNode>) {
   const color = NODE_COLORS[data.color as keyof typeof NODE_COLORS] ?? NODE_COLORS.neutral;
   const editing = useContext(CanvasNodeEditingContext);
@@ -363,6 +365,7 @@ interface NodeColorToolbarProps {
   onColorChange: (color: keyof typeof NODE_COLORS) => void;
 }
 
+/** Renders the floating swatch toolbar used to change a selected node's color. */
 function NodeColorToolbar({
   activeColor,
   onColorChange,
@@ -418,6 +421,7 @@ interface ShapeVisualProps {
   selected?: boolean;
 }
 
+/** Renders the fill/stroke visual for a node's shape, dimming it when not selected. */
 function ShapeVisual({ shape, fill, selected = false, stroke }: ShapeVisualProps) {
   if (shape === "rectangle" || shape === "pill" || shape === "circle") {
     return (
@@ -519,7 +523,9 @@ interface ShapePanelProps {
   ) => void;
 }
 
+/** Renders the draggable shape toolbar used to add new nodes to the canvas. */
 function ShapePanel({ onDragPreviewChange }: ShapePanelProps) {
+  /** Attaches the drag payload for a shape and notifies the drag preview of its start position. */
   const handleDragStart = (
     event: DragEvent<HTMLButtonElement>,
     shape: CanvasShape,
@@ -586,6 +592,7 @@ interface CanvasControlsProps {
   onZoomOut: () => void;
 }
 
+/** Renders the floating zoom, fit-view, undo, and redo controls for the canvas. */
 function CanvasControls({
   canRedo,
   canUndo,
@@ -659,6 +666,10 @@ function CanvasControls({
   );
 }
 
+/**
+ * Renders the React Flow canvas with node/edge editing, drag-and-drop shape creation,
+ * starter template import, keyboard shortcuts, and undo/redo controls.
+ */
 function FlowCanvasContent() {
   const reactFlow = useReactFlow<CanvasNode, CanvasEdge>();
   useStarterTemplates();
@@ -678,6 +689,7 @@ function FlowCanvasContent() {
       edges: { initial: [] },
     });
 
+  /** Clears the canvas and populates it with the given starter template's nodes and edges. */
   const importTemplate = useCallback(
     (template: CanvasTemplate) => {
       history.pause();
@@ -740,6 +752,7 @@ function FlowCanvasContent() {
     ]);
   };
 
+  /** Updates a node's label, no-op if the node no longer exists. */
   const updateNodeLabel = (nodeId: string, label: string) => {
     const node = reactFlow.getNode(nodeId);
     if (!node) return;
@@ -759,6 +772,7 @@ function FlowCanvasContent() {
     ]);
   };
 
+  /** Updates a node's color, no-op if the node no longer exists. */
   const updateNodeColor = (
     nodeId: string,
     color: keyof typeof NODE_COLORS,
@@ -781,6 +795,7 @@ function FlowCanvasContent() {
     ]);
   };
 
+  /** Updates an edge's label, no-op if the edge no longer exists. */
   const updateEdgeLabel = (edgeId: string, label: string) => {
     const edge = reactFlow.getEdge(edgeId);
     if (!edge) return;
@@ -819,6 +834,7 @@ function FlowCanvasContent() {
     );
   };
 
+  /** Handles dropping a dragged shape payload onto the canvas, adding a node and clearing the preview. */
   const handleDrop = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();

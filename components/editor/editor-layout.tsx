@@ -69,6 +69,10 @@ interface EditorLayoutContentProps {
   setIsShareDialogOpen: (open: boolean) => void;
 }
 
+/**
+ * Renders the editor navbar, sidebar, share dialog, and AI placeholder,
+ * wiring the starter templates action into the navbar.
+ */
 function EditorLayoutContent({
   activeProjectId,
   children,
